@@ -2,6 +2,7 @@ import 'package:ecommerce/app/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
+import '../../../models/product_model.dart';
 import 'admin_add_product.dart';
 
 class AdminHome extends ConsumerWidget {
@@ -23,6 +24,36 @@ class AdminHome extends ConsumerWidget {
         onPressed: () => Navigator.of(context).push(
             MaterialPageRoute(builder: (_) => const AdminAddProductPage())),
       ),
+      body: StreamBuilder<List<Product>>(
+          stream: ref.read(databaseProvider)!.getProducts(),
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.active &&
+                snapshot.data != null) {
+              return ListView.builder(
+                itemCount: snapshot.data!.length,
+                itemBuilder: ((context, index) {
+                  final product = snapshot.data![index];
+                  return ListTile(
+                    title: Text(product.name),
+                    subtitle: Text("Price: " + product.price.toString()),
+                    leading: product.imageUrl != ""
+                        ? Image.network(product.imageUrl, height: 300)
+                        : Container(),
+                    trailing: IconButton(
+                        icon: const Icon(Icons.delete),
+                        onPressed: () {
+                          ref
+                              .read(databaseProvider)!
+                              .deleteProduct(product.id!);
+                        }),
+                  );
+                }),
+              );
+            }
+            return const Center(
+              child: CircularProgressIndicator(),
+            );
+          }),
     );
   }
 }

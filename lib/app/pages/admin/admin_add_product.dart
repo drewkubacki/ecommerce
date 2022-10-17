@@ -1,6 +1,9 @@
+import 'dart:io';
+
 import 'package:ecommerce/app/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../models/product_model.dart';
 
@@ -23,28 +26,52 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
       appBar: AppBar(title: const Text("Add Product")),
       body: Padding(
         padding: const EdgeInsets.all(25.0),
-        child: Column(
-          children: [
-            CustomInputFieldFb1(
-                inputController: titleTextEditingController,
-                hintText: 'Product Name',
-                labelText: 'Product Name'),
-            const SizedBox(height: 15),
-            CustomInputFieldFb1(
-                inputController: descriptionEditingController,
-                hintText: 'Product Description',
-                labelText: 'Product Description'),
-            const SizedBox(height: 15),
-            CustomInputFieldFb1(
-                inputController: priceEditingController,
-                hintText: 'Price',
-                labelText: 'Price'),
-            Spacer(),
-            ElevatedButton(
-              onPressed: () => _addProduct(),
-              child: const Text("Add Product"),
-            ),
-          ],
+        child: SingleChildScrollView(
+          child: Column(
+            children: [
+              CustomInputFieldFb1(
+                  inputController: titleTextEditingController,
+                  hintText: 'Product Name',
+                  labelText: 'Product Name'),
+              const SizedBox(height: 15),
+              CustomInputFieldFb1(
+                  inputController: descriptionEditingController,
+                  hintText: 'Product Description',
+                  labelText: 'Product Description'),
+              const SizedBox(height: 15),
+              CustomInputFieldFb1(
+                  inputController: priceEditingController,
+                  hintText: 'Price',
+                  labelText: 'Price'),
+              const SizedBox(height: 15),
+              Consumer(
+                builder: (context, watch, child) {
+                  final image = ref.watch(addImageProvider);
+                  return image == null
+                      ? const Text('No Image Selected')
+                      : Image.file(
+                          File(image.path),
+                          height: 200,
+                        );
+                },
+              ),
+              ElevatedButton(
+                  child: const Text("Upload Image"),
+                  onPressed: () async {
+                    final image = await ImagePicker().pickImage(
+                      source: ImageSource.gallery,
+                    );
+                    if (image != null) {
+                      ref.watch(addImageProvider.state).state = image;
+                    }
+                  }),
+              const SizedBox(height: 15),
+              ElevatedButton(
+                  onPressed: () => _addProduct(),
+                  child: const Text("Add Product")),
+              const SizedBox(height: 15),
+            ],
+          ),
         ),
       ),
     );
@@ -52,18 +79,20 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
 
   _addProduct() async {
     final storage = ref.read(databaseProvider);
-/*     print(storage);
-    if (storage == null) {
+    final imageFile = ref.read(addImageProvider.state).state;
+    final fileStorage = ref.read(storageProvider);
+
+    if (storage == null || imageFile == null || fileStorage == null) {
       return;
-    } else { */
-    await storage?.addProduct(Product(
+    }
+    final imageUrl = await fileStorage.uploadFile(imageFile.path);
+    await storage.addProduct(Product(
       name: titleTextEditingController.text,
       description: descriptionEditingController.text,
       price: double.parse(priceEditingController.text),
-      imageUrl: "image",
+      imageUrl: imageUrl,
     ));
     Navigator.pop(context);
-    //}
   }
 }
 
