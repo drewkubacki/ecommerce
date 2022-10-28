@@ -1,8 +1,11 @@
 import 'package:ecommerce/app/providers.dart';
+import 'package:ecommerce/utils/snackbars.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:lottie/lottie.dart';
 
 import '../../../models/product_model.dart';
+import '../../../widgets/project_list_tile.dart';
 import 'admin_add_product.dart';
 
 class AdminHome extends ConsumerWidget {
@@ -29,25 +32,36 @@ class AdminHome extends ConsumerWidget {
           builder: (context, snapshot) {
             if (snapshot.connectionState == ConnectionState.active &&
                 snapshot.data != null) {
+              if (snapshot.data!.isEmpty) {
+                return Center(
+                    child: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    const Text("No products yet..."),
+                    Lottie.asset(
+                      "assets/anim/sadEmpty.json",
+                      width: 200,
+                      //repeat: false
+                    ),
+                  ],
+                ));
+              }
               return ListView.builder(
                 itemCount: snapshot.data!.length,
-                itemBuilder: ((context, index) {
+                itemBuilder: (context, index) {
                   final product = snapshot.data![index];
-                  return ListTile(
-                    title: Text(product.name),
-                    subtitle: Text("Price: " + product.price.toString()),
-                    leading: product.imageUrl != ""
-                        ? Image.network(product.imageUrl, height: 300)
-                        : Container(),
-                    trailing: IconButton(
-                        icon: const Icon(Icons.delete),
-                        onPressed: () {
-                          ref
-                              .read(databaseProvider)!
-                              .deleteProduct(product.id!);
-                        }),
-                  );
-                }),
+                  return Padding(
+                      padding: const EdgeInsets.all(8.5),
+                      child: ProductListTile(
+                          product: product,
+                          onDelete: () async {
+                            openIconSnackBar(context, "Deleting item...",
+                                const Icon(Icons.delete, color: Colors.white));
+                            await ref
+                                .read(databaseProvider)!
+                                .deleteProduct(product.id!);
+                          }));
+                },
               );
             }
             return const Center(

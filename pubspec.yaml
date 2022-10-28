@@ -43,6 +43,9 @@ dependencies:
   flutterfire_ui: ^0.4.0
   flutter_riverpod: ^1.0.3
   image_picker: ^0.8.5
+  flutter_slidable: ^1.2.0
+  lottie: ^1.2.2
+
 
 dev_dependencies:
   flutter_test:
@@ -67,12 +70,12 @@ flutter:
   uses-material-design: true
 
   # To add assets to your application, add an assets section, like this:
-assets:
-  - assets/
-  - assets/img/
-  - assets/icon/
-  - assets/anim/
-  - assets/font/
+  assets:
+    - assets/
+    - assets/img/
+    - assets/icon/
+    - assets/anim/
+    - assets/font/
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

@@ -1,6 +1,7 @@
 # ecommerce
 
-A new Flutter project.
+This project was built while enrolled in the SideGuide online course.
+This project allowed me to better understand Riverpod state management and working with more complext applications.
 
 ## Getting Started
 

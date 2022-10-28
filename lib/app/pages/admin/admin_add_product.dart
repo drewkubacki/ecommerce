@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../models/product_model.dart';
+import '../../../utils/snackbars.dart';
 
 class AdminAddProductPage extends ConsumerStatefulWidget {
   const AdminAddProductPage({Key? key}) : super(key: key);
@@ -92,6 +93,10 @@ class _AdminAddProductPageState extends ConsumerState<AdminAddProductPage> {
       price: double.parse(priceEditingController.text),
       imageUrl: imageUrl,
     ));
+
+    // ignore: use_build_context_synchronously
+    openIconSnackBar(context, "Product added successfully",
+        const Icon(Icons.check, color: Colors.white));
     Navigator.pop(context);
   }
 }
