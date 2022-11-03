@@ -13,9 +13,11 @@ class SignInPage extends StatelessWidget {
       footerBuilder: (context, _) {
         return const Padding(
           padding: EdgeInsets.only(top: 16),
-          child: Text(
-            'By signing, you have just made a deal with the devil',
-            style: TextStyle(color: Colors.grey),
+          child: Center(
+            child: Text(
+              'Please sign in above',
+              style: TextStyle(color: Colors.grey),
+            ),
           ),
         );
       },
