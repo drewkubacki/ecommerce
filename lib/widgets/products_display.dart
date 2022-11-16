@@ -43,7 +43,7 @@ class ProductsDisplay extends ConsumerWidget {
                         borderRadius: BorderRadius.circular(10.0),
                       ),
                       child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                        crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
                           Expanded(
                             child: Hero(
@@ -56,7 +56,7 @@ class ProductsDisplay extends ConsumerWidget {
                               ),
                             ),
                           ),
-                          const SizedBox(height: 10),
+                          const SizedBox(height: 5),
                           Text(
                             product.name,
                             style: const TextStyle(

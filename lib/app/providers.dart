@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../services/firestore_service.dart';
+import '../services/payment_service.dart';
 import '../services/storage_service.dart';
 import '../view_models/bag_view_model.dart';
 
@@ -36,4 +37,8 @@ final storageProvider = Provider<StorageService?>((ref) {
 
 final bagProvider = ChangeNotifierProvider<BagViewModel>((ref) {
   return BagViewModel();
+});
+
+final paymentProvider = Provider<PaymentService>((ref) {
+  return PaymentService();
 });

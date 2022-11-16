@@ -36,6 +36,7 @@ class UserHome extends ConsumerWidget {
               ),
               const Text("View all of our products",
                   style: TextStyle(fontSize: 12)),
+              SizedBox(height: 10),
               const Flexible(child: ProductsDisplay()),
             ],
           ),
