@@ -1,6 +1,7 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 
+import '../models/order_model.dart';
 import '../models/product_model.dart';
 import '../models/user_data.dart';
 
@@ -40,5 +41,32 @@ class FirestoreService {
   Future<UserData?> getUser(String uid) async {
     final doc = await firestore.collection("users").doc(uid).get();
     return doc.exists ? UserData.fromMap(doc.data()!) : null;
+  }
+
+  Future<void> saveOrder(String confirmationId, List<Product> products) async {
+    await firestore.collection("users").doc(uid).collection("orders").add({
+      'confirmationId': confirmationId,
+      'products':
+          products.map((product) => product.toMap(confirmationId)).toList(),
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+    await firestore.collection("orders").doc(confirmationId).set({
+      'confirmationId': confirmationId,
+      'products':
+          products.map((product) => product.toMap(confirmationId)).toList(),
+      'timestamp': FieldValue.serverTimestamp(),
+    });
+  }
+
+  Stream<List<Order>> getOrders() {
+    return firestore
+        .collection("users")
+        .doc(uid)
+        .collection("orders")
+        .snapshots()
+        .map((snapshot) => snapshot.docs.map((doc) {
+              final d = doc.data();
+              return Order.fromMap(d);
+            }).toList());
   }
 }

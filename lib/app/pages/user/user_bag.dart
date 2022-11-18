@@ -1,7 +1,6 @@
 import 'package:ecommerce/app/providers.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-
 import '../../../widgets/empty_widget.dart';
 
 class UserBag extends ConsumerWidget {
@@ -74,8 +73,9 @@ class UserBag extends ConsumerWidget {
                         final userBag = ref.watch(bagProvider);
                         final result = await payment.initPaymentSheet(
                             user.value!, userBag.totalPrice);
-
                         if (!result.isError) {
+                          ref.read(databaseProvider)!.saveOrder(
+                              result.payIntentId!, userBag.productsBag);
                           ScaffoldMessenger.of(context).showSnackBar(
                             const SnackBar(content: Text("Payment Completed!")),
                           );
